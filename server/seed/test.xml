@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OTA_HotelRateAmountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
+                            EchoToken="12345678"
+                            TimeStamp="2020-05-19T20:50:37-05:00"
+                            Version="3.0">
+  <RateAmountMessages HotelCode="Property_1">
+    <RateAmountMessage>
+      <StatusApplicationControl Start="2020-05-18"
+                                End="2020-05-23"
+                                InvTypeCode="RoomID_1"
+                                RatePlanCode="PackageID_1"/>
+      <Rates>
+        <Rate>
+          <BaseByGuestAmts>
+            <BaseByGuestAmt AmountBeforeTax="100.00"
+                            CurrencyCode="USD"/>
+          </BaseByGuestAmts>
+        </Rate>
+      </Rates>
+    </RateAmountMessage>
+  </RateAmountMessages>
+</OTA_HotelRateAmountNotifRQ>
