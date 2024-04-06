@@ -11,6 +11,7 @@ app.use(
   cors({
     origin: "https://hotel-pearl-three.vercel.app/",
     credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
 
