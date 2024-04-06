@@ -67,7 +67,7 @@ async function init() {
 
   // console.log(dayjs("2024-03-30").format("DD-MM-YYYY"));
   connectDb(config.MONGO || "mongodb://127.0.0.1:27017/Hotel");
-  server.listen(process.env.POST || config.PORT, () => console.log("Example app listening ..."));
+  server.listen(process.env.PORT || config.PORT, () => console.log("Example app listening ..."));
 }
 
 init();
