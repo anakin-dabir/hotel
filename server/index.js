@@ -8,6 +8,11 @@ import config from "./config/config.js";
 
 async function init() {
   const server = http.createServer(app);
+  app.post("/some-route", (req, res) => {
+    console.log(req.headers); // Inspect the headers on incoming requests
+    // ...
+  });
+
   app.get("/", (req, res) => res.send("SERVER LISTENING ..."));
   app.use("/room", roomRouter);
   app.use("/package", packageRouter);

@@ -7,12 +7,6 @@ const app = express();
 dotenv.config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/ ", (req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://hotel-ten-livid.vercel.app");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
 app.use(
   cors({
     origin: "https://hotel-ten-livid.vercel.app",
