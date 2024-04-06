@@ -15,52 +15,52 @@ import config from "./config/config.js";
 
 async function init() {
   const server = http.createServer(app);
-  const payload = `
-<OTA_HotelInvCountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
-                          EchoToken="11122"
-                          TimeStamp="2024-03-17T18:04:55.968Z"
-                          Version="3.0">
-  <Inventories HotelCode="10">
-    <Inventory>
-      <StatusApplicationControl Start="2024-03-18"
-                                End="2024-03-18"
-                                InvTypeCode="RoomID_2"/>
-      <InvCounts>
-        <InvCount Count="0" CountType="2"/>
-      </InvCounts>
-    </Inventory>
-  </Inventories>
-</OTA_HotelInvCountNotifRQ>
+  //   const payload = `
+  // <OTA_HotelInvCountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
+  //                           EchoToken="11122"
+  //                           TimeStamp="2024-03-17T18:04:55.968Z"
+  //                           Version="3.0">
+  //   <Inventories HotelCode="10">
+  //     <Inventory>
+  //       <StatusApplicationControl Start="2024-03-18"
+  //                                 End="2024-03-18"
+  //                                 InvTypeCode="RoomID_2"/>
+  //       <InvCounts>
+  //         <InvCount Count="0" CountType="2"/>
+  //       </InvCounts>
+  //     </Inventory>
+  //   </Inventories>
+  // </OTA_HotelInvCountNotifRQ>
 
-`;
+  // `;
 
-  const fetchOptions = {
-    headers: {
-      "Content-Type": "application/xml",
-    },
-    body: payload,
-  };
+  //   const fetchOptions = {
+  //     headers: {
+  //       "Content-Type": "application/xml",
+  //     },
+  //     body: payload,
+  //   };
 
-  app.get("/room", async (req, res) => {
-    try {
-      const date = dayjs().format("DD-MM-YYYY");
-      console.log("Running ... ");
-      const data = addRoom({
-        roomId: "65f76347ce6302dc2cfa8a79",
-        name: "Deluxe Room",
-        packageId: "65f790e8de7e762a9a163b2b",
-        packageName: "Deluxe Package",
-        packageId2: "65f791097cc4234907d396bc",
-        packageName2: "Simple Package",
-      });
-      const res = await axios.post(TRANSACTION, data, fetchOptions);
-      return res.json({ message: "Success" });
-    } catch (error) {
-      return res.json({ error });
-    }
-  });
+  //   app.get("/room", async (req, res) => {
+  //     try {
+  //       const date = dayjs().format("DD-MM-YYYY");
+  //       console.log("Running ... ");
+  //       const data = addRoom({
+  //         roomId: "65f76347ce6302dc2cfa8a79",
+  //         name: "Deluxe Room",
+  //         packageId: "65f790e8de7e762a9a163b2b",
+  //         packageName: "Deluxe Package",
+  //         packageId2: "65f791097cc4234907d396bc",
+  //         packageName2: "Simple Package",
+  //       });
+  //       const res = await axios.post(TRANSACTION, data, fetchOptions);
+  //       return res.json({ message: "Success" });
+  //     } catch (error) {
+  //       return res.json({ error });
+  //     }
+  //   });
 
-  app.use("/v1", router);
+  app.get("/", (req, res) => res.send("SERVER LISTENING ..."));
   app.use("/v1/room", roomRouter);
   app.use("/v1/package", packageRouter);
   app.use("/v1/hotel", hotelRouter);
