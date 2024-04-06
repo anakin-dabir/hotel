@@ -9,7 +9,7 @@ const config = {
     },
   },
   GOLBAL_ERROR_MESSAGE: "500: SERVER ERROR",
-  MONGO: "mongodb+srv://talhaarshad2413:NmthDucLiNDfVYrn@collaboradocs.fuasesu.mongodb.net/",
+  MONGO: "mongodb+srv://talhaarshad2413:NmthDucLiNDfVYrn@collaboradocs.fuasesu.mongodb.net/Hotel",
   CLIENT: "https://hotel-pearl-three.vercel.app/",
   COMEON: "FIX UP",
 };
