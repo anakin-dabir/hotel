@@ -9,8 +9,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "*",
+    origin: "https://hotel-ten-livid.vercel.app/admin",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
   })
 );
 
