@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://hotel-pearl-three.vercel.app/",
+    origin: "https://hotel-ten-livid.vercel.app/",
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
