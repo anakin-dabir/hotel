@@ -10,7 +10,7 @@ const config = {
   },
   GOLBAL_ERROR_MESSAGE: "500: SERVER ERROR",
   MONGO: "mongodb+srv://talhaarshad2413:NmthDucLiNDfVYrn@collaboradocs.fuasesu.mongodb.net/",
-  CLIENT: "https://hotel-seven-inky.vercel.app/",
+  CLIENT: "https://hotel-seven-inky.vercel.app",
   COMEON: "FIX UP",
   TOKEN: "lupwt97flnbr5wbg65p",
   COOKIE_MAX_AGE: 7 * 24 * 60 * 60,
