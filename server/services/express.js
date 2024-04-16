@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import config from "../config/config";
+import config from "../config/config.js";
 
 const app = express();
 dotenv.config();
