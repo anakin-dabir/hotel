@@ -1,0 +1,450 @@
+[
+  {
+    "id": 20,
+    "name": "Zangmo Lee Baam",
+    "address": {
+      "location": "Block, Nandok, Bhusuk Rd, near Ranipool, Gangtok, Sikkim 737102",
+      "city": "Turtuk",
+      "state": "Ladhakh",
+      "postalCode": 737102,
+      "country": "India",
+      "latitude": 27.30903,
+      "longitude": 88.62672
+    },
+    "social": {
+      "phone": "89674 23636"
+    }
+  },
+  {
+    "id": 21,
+    "name": "Hotel Sitara Inn",
+    "address": {
+      "location": "Mubarak house, arogya mandir, 726 B, Ratnagiri, Maharashtra 415612",
+      "city": "Ratnagiri",
+      "state": "Maharashtra",
+      "postalCode": 415612,
+      "country": "India",
+      "latitude": 16.9902,
+      "longitude": 73.31751
+    },
+    "social": {
+      "phone": 7891712856
+    }
+  },
+  {
+    "id": 22,
+    "name": "Mukteshwar Grand Retreat",
+    "address": {
+      "location": "Tehsil, Village - Pokhrad, Dhari, near Bhalugarh Fall, Mukteshwar, Uttarakhand 263138",
+      "city": "Mukteshwar",
+      "state": "Uttarakhand",
+      "postalCode": 263138,
+      "country": "India",
+      "latitude": 29.408,
+      "longitude": 79.63637
+    },
+    "social": {
+      "phone": 8826125287
+    }
+  },
+  {
+    "id": 23,
+    "name": "Tyakshi Summer Camp & caf�",
+    "address": {
+      "location": "Tyakshi, Turtuk, Ladakh 194101",
+      "city": "Turtuk",
+      "state": "Ladhakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.87609,
+      "longitude": 76.81721
+    },
+    "social": {
+      "phone": 9797503068
+    }
+  },
+  {
+    "id": 24,
+    "name": "The Karim Residency",
+    "address": {
+      "location": "Turtuk (Nubra, Puchathang, Tyakshi, Ladakh 194401",
+      "city": "Turtuk",
+      "state": "Ladhakh",
+      "postalCode": 194401,
+      "country": "India",
+      "latitude": 34.89329,
+      "longitude": 76.79651
+    },
+    "social": {
+      "phone": 6005584502
+    }
+  },
+  {
+    "id": 25,
+    "name": "The Namdul Boutique",
+    "address": {
+      "location": "Namdul Residency, Chooksing House, Arithang, Gangtok, Sikkim 737101",
+      "city": "Gangtok",
+      "state": "Sikkim",
+      "postalCode": 737101,
+      "country": "India",
+      "latitude": 27.32995,
+      "longitude": 88.60976
+    },
+    "social": {
+      "phone": 9903328086
+    }
+  },
+  {
+    "id": 26,
+    "name": "Hotel Grandala",
+    "address": {
+      "location": "Mahatma Gandhi Marg, near Hotel Sher-E-Punjab, Arithang, Gangtok, Sikkim 737101",
+      "city": "Gangtok",
+      "state": "Sikkim",
+      "postalCode": 737101,
+      "country": "India",
+      "latitude": 27.32921,
+      "longitude": 88.6103
+    },
+    "social": {
+      "phone": 7001450233
+    }
+  },
+  {
+    "id": 27,
+    "name": "HOTEL AILISH",
+    "address": {
+      "location": "Tarbha, Odisha 767016",
+      "city": "Tarbha",
+      "state": "Odisha",
+      "postalCode": 767016,
+      "country": "India",
+      "latitude": 20.72838,
+      "longitude": 83.67571
+    },
+    "social": {
+      "phone": 7008062379
+    }
+  },
+  {
+    "id": 28,
+    "name": "Hotel Kisan",
+    "address": {
+      "location": "Chakra Tirtha Rd, Penthakata, Puri, Odisha 752002",
+      "city": "Puri",
+      "state": "Odisha",
+      "postalCode": 752002,
+      "country": "India",
+      "latitude": 19.80641,
+      "longitude": 85.84807
+    },
+    "social": {
+      "phone": 8917377989
+    }
+  },
+  {
+    "id": 29,
+    "name": "New Ashok Royal",
+    "address": {
+      "location": "Lighthouse Ln, MDHB-52, Baliapanda Housing Board Colony, Puri, Odisha 752001",
+      "city": "Puri",
+      "state": "Odisha",
+      "postalCode": 752001,
+      "country": "India",
+      "latitude": 19.79135,
+      "longitude": 85.80509
+    },
+    "social": {
+      "phone": 9090457854
+    }
+  },
+  {
+    "id": 30,
+    "name": "The Cocoon - Boutique Stay and Party Lawns",
+    "address": {
+      "location": "Home stay in Dehradun, Uttarakhand",
+      "city": "Dehradun",
+      "state": "Uttarakhand",
+      "postalCode": 248171,
+      "country": "India",
+      "latitude": 30.30638,
+      "longitude": 78.01355
+    },
+    "social": {
+      "phone": 7351526628
+    }
+  },
+  {
+    "id": 31,
+    "name": "Hotel Youthok Heritage",
+    "address": {
+      "location": "Hotel Youthok Heritage, katpa, Sankar Rd, Leh, Ladakh 194101",
+      "city": "Leh",
+      "state": "Ladakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.17233,
+      "longitude": 77.5908
+    },
+    "social": {
+      "phone": 8082929134
+    }
+  },
+  {
+    "id": 32,
+    "name": "SUKOON TURTUK HOME STAY",
+    "address": {
+      "location": "Sukoon Homestay, Turtuk, Ladakh 194401",
+      "city": "Turtuk",
+      "state": "Ladakh",
+      "postalCode": 194401,
+      "country": "India",
+      "latitude": 34.84542,
+      "longitude": 76.82808
+    },
+    "social": {
+      "phone": 9090212126
+    }
+  },
+  {
+    "id": 33,
+    "name": "Leh Town Residency",
+    "address": {
+      "location": "Khakshal near wheel of life, Leh, Ladakh 194101",
+      "city": "Leh",
+      "state": "Ladakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.18431,
+      "longitude": 77.59233
+    },
+    "social": {
+      "phone": 6005284191
+    }
+  },
+  {
+    "id": 34,
+    "name": "Hotel Nubra Residency",
+    "address": {
+      "location": "Hunder nubra valley Leh Jammu and Kashmir, 194401",
+      "city": "Leh",
+      "state": "Jammu and Kashmir",
+      "postalCode": 194401,
+      "country": "India",
+      "latitude": 34.58971,
+      "longitude": 77.46924
+    },
+    "social": {
+      "phone": 9868337744
+    }
+  },
+  {
+    "id": 35,
+    "name": "Gyalsaa inn",
+    "address": {
+      "location": "Fort Rd, Leh, Ladakh 194101",
+      "city": "Leh",
+      "state": "Ladakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.16201,
+      "longitude": 77.58151
+    },
+    "social": {
+      "phone": 9845122347
+    }
+  },
+  {
+    "id": 36,
+    "name": "Hotel Thachung",
+    "address": {
+      "location": "GGXW+XHG, Diskit - Turtok Hwy, Diskit, Ladakh 194401",
+      "city": "Diskit",
+      "state": "Ladakh",
+      "postalCode": 194401,
+      "country": "India",
+      "latitude": 34.55081,
+      "longitude": 77.53181
+    },
+    "social": {
+      "phone": 9469176066
+    }
+  },
+  {
+    "id": 37,
+    "name": "Hotel Bayshu",
+    "address": {
+      "location": "Sankar Rd, near Lamdon School, Leh, Ladakh 194101",
+      "city": "Leh",
+      "state": "Ladakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.17494,
+      "longitude": 77.58855
+    },
+    "social": {
+      "phone": 9658125489
+    }
+  },
+  {
+    "id": 38,
+    "name": "Border Cafe and Camp Turtuk",
+    "address": {
+      "location": "Shyok Valley Rd, Tyakshi, Ladakh 194101",
+      "city": "Tyakshi",
+      "state": "Ladhakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.91296,
+      "longitude": 76.79443
+    },
+    "social": {
+      "phone": 9906977333
+    }
+  },
+  {
+    "id": 10,
+    "name": "Zaildar Royal Garden",
+    "address": {
+      "location": "Zaildar Royal Garden Tyakshi Turtuk Ladakh 194101",
+      "city": "Turtuk",
+      "state": "Ladakh",
+      "postalCode": 194101,
+      "country": "India",
+      "latitude": 34.8752,
+      "longitude": 76.81741
+    },
+    "social": {
+      "phone": "94191 76720"
+    }
+  },
+  {
+    "id": 11,
+    "name": "Dandeli Riverwood Residency",
+    "address": {
+      "location": "IPM Campus Bailpar Old Dandeli Dandeli Karnataka 581325",
+      "city": "Dandeli",
+      "state": "Karnataka",
+      "postalCode": 581325,
+      "country": "India",
+      "latitude": 15.23341,
+      "longitude": 74.61294
+    },
+    "social": {
+      "phone": "97401 72163"
+    }
+  },
+  {
+    "id": 13,
+    "name": "Wood Clusters",
+    "address": {
+      "location": "217 36 Kodagarahalli NH 275 Bangalore NH 275 Suntikoppa Karnataka 571237",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "postalCode": 211003,
+      "country": "India",
+      "latitude": 12.44249,
+      "longitude": 75.85578
+    },
+    "social": {
+      "phone": 9880104479
+    }
+  },
+  {
+    "id": 14,
+    "name": "Hotel Sunrise Inn & Resturant Kanatal Chamba Tehri Gharwal",
+    "address": {
+      "location": "Jaripani Chamba - Mussoorie Rd near Kantal Jadipani Chamba Sakalana Range Uttarakhand 249145",
+      "city": "chamba",
+      "state": "Uttarakhand",
+      "postalCode": 211003,
+      "country": "India",
+      "latitude": 30.40815,
+      "longitude": 78.37852
+    },
+    "social": {
+      "phone": 9528130471
+    }
+  },
+  {
+    "id": 15,
+    "name": "Icon Palace Inn",
+    "address": {
+      "location": "3 Johnston Ganj Mohatsim Ganj Prayagraj Uttar Pradesh 211003",
+      "city": "Prayagraj",
+      "state": "Uttar Pradesh",
+      "postalCode": 211003,
+      "country": "India",
+      "latitude": 25.44421,
+      "longitude": 81.83591
+    },
+    "social": {
+      "phone": 9125711877
+    }
+  },
+  {
+    "id": 16,
+    "name": "The Stone Palace Turtuk",
+    "address": {
+      "location": "Turtuk, Ladakh 194401",
+      "city": "Turtuk",
+      "state": "Ladakh",
+      "postalCode": 194401,
+      "country": "India",
+      "latitude": 34.84418,
+      "longitude": 76.83355
+    },
+    "social": {
+      "phone": "94195 10276"
+    }
+  },
+  {
+    "id": 17,
+    "name": "Chanshal Camps & Resort",
+    "address": {
+      "location": "Vill- mandli P.O- Masli, Teh, Chirgaon, Himachal Pradesh 171208",
+      "city": "Chirgaon",
+      "state": "Himachal Pradesh",
+      "postalCode": 171208,
+      "country": "India",
+      "latitude": 31.22077,
+      "longitude": 77.84131
+    },
+    "social": {
+      "phone": "86280 52317"
+    }
+  },
+  {
+    "id": 18,
+    "name": "Hotel Apple Grand Indore",
+    "address": {
+      "location": "Opposite Madan Mahal Garden, Prime City, Sukhlia, Indore, Madhya Pradesh 452011",
+      "city": "Indore",
+      "state": "Madhya Pradesh",
+      "postalCode": 452011,
+      "country": "India",
+      "latitude": 22.75552,
+      "longitude": 75.86998
+    },
+    "social": {
+      "phone": ""
+    }
+  },
+  {
+    "id": 19,
+    "name": "Hotel Ayush International",
+    "address": {
+      "location": "Bus Stop, Remuna Golai, Balasore, Odisha 756019",
+      "city": "Remuna",
+      "state": "Odisha",
+      "postalCode": 756019,
+      "country": "India",
+      "latitude": 21.51504,
+      "longitude": 86.89291
+    },
+    "social": {
+      "phone": ""
+    }
+  }
+]

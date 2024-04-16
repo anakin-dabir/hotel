@@ -8,6 +8,8 @@ import _googleError from "../utils/_googleError.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
 async function updateInventory(req, res) {
   const {
+    hotelId,
+    roomId,
     packageId,
     date,
     data: { inventory, availability },
@@ -15,15 +17,19 @@ async function updateInventory(req, res) {
 
   const _googleDate = dayjs(date).format("YYYY-MM-DD");
   const _googleInventory = addInventory({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    packageId,
+    roomId,
     startDate: _googleDate,
     endDate: _googleDate,
     inventory: inventory,
-    hotelId: 20,
   });
+  console.log(_googleInventory);
 
   const _googleAvailability = toggleAvailability({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    packageId,
+    roomId,
     startDate: _googleDate,
     endDate: _googleDate,
     packageId: packageId,
@@ -31,11 +37,7 @@ async function updateInventory(req, res) {
   });
 
   const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  const _googleAvailabilityRequest = axios.post(
-    AVAILABILITY,
-    _googleAvailability,
-    config.FETCH_OPTIONS
-  );
+  const _googleAvailabilityRequest = axios.post(AVAILABILITY, _googleAvailability, config.FETCH_OPTIONS);
 
   try {
     const responses = await Promise.all([_googleInventoryRequest, _googleAvailabilityRequest]);
@@ -66,7 +68,9 @@ async function updateInventory(req, res) {
 
 async function updateBulkInventory(req, res) {
   const {
+    hotelId,
     packageId,
+    roomId,
     date: { startDate, endDate },
     data: { inventory, availability },
   } = req.body;
@@ -74,15 +78,18 @@ async function updateBulkInventory(req, res) {
   const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
   const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
   const _googleInventory = addInventory({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    packageId,
+    roomId,
     startDate: _googleStartDate,
     endDate: _googleEndDate,
     inventory: inventory,
-    hotelId: 20,
   });
 
   const _googleAvailability = toggleAvailability({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    packageId,
+    roomId,
     startDate: _googleStartDate,
     endDate: _googleEndDate,
     packageId: packageId,
@@ -90,11 +97,7 @@ async function updateBulkInventory(req, res) {
   });
 
   const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  const _googleAvailabilityRequest = axios.post(
-    AVAILABILITY,
-    _googleAvailability,
-    config.FETCH_OPTIONS
-  );
+  const _googleAvailabilityRequest = axios.post(AVAILABILITY, _googleAvailability, config.FETCH_OPTIONS);
 
   try {
     const responses = await Promise.all([_googleInventoryRequest, _googleAvailabilityRequest]);
@@ -110,17 +113,9 @@ async function updateBulkInventory(req, res) {
   try {
     const _package = await Package.findById(packageId);
     const data = _package.data;
-    for (
-      let curDate = new Date(startDate);
-      curDate <= new Date(endDate);
-      curDate.setDate(curDate.getDate() + 1)
-    ) {
+    for (let curDate = new Date(startDate); curDate <= new Date(endDate); curDate.setDate(curDate.getDate() + 1)) {
       if (data.get(dayjs(curDate).format("YYYY/MM/DD")) == undefined) {
-        data.set(dayjs(curDate).format("YYYY/MM/DD"), [
-          config.DEFAULT_RATE,
-          availability,
-          inventory,
-        ]);
+        data.set(dayjs(curDate).format("YYYY/MM/DD"), [config.DEFAULT_RATE, availability, inventory]);
       } else {
         const dataArray = data.get(dayjs(curDate).format("YYYY/MM/DD"));
         dataArray[1] = availability;

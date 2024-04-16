@@ -8,6 +8,8 @@ import _googleError from "../utils/_googleError.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
 async function updateRate(req, res) {
   const {
+    hotelId,
+    roomId,
     packageId,
     date,
     data: { rate },
@@ -15,12 +17,13 @@ async function updateRate(req, res) {
 
   const _googleDate = dayjs(date).format("YYYY-MM-DD");
   const _googlePrice = addRate({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    roomId,
+    packageId,
     startDate: _googleDate,
     endDate: _googleDate,
     packageId: packageId,
     amountBeforeTax: rate,
-    hotelId: 20,
   });
 
   try {
@@ -32,11 +35,7 @@ async function updateRate(req, res) {
     const _package = await Package.findById(packageId);
     const data = _package.data;
     if (data.get(dayjs(date).format("YYYY/MM/DD")) == undefined) {
-      data.set(dayjs(date).format("YYYY/MM/DD"), [
-        rate,
-        config.DEFAULT_AVAILABILITY,
-        config.DEFAULT_INVENTORY,
-      ]);
+      data.set(dayjs(date).format("YYYY/MM/DD"), [rate, config.DEFAULT_AVAILABILITY, config.DEFAULT_INVENTORY]);
     } else {
       const dataArray = data.get(dayjs(date).format("YYYY/MM/DD"));
       dataArray[0] = rate;
@@ -54,6 +53,8 @@ async function updateRate(req, res) {
 
 async function updateBulkRate(req, res) {
   const {
+    hotelId,
+    roomId,
     packageId,
     date: { startDate, endDate },
     data: { rate },
@@ -62,12 +63,13 @@ async function updateBulkRate(req, res) {
   const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
   const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
   const _googlePrice = addRate({
-    roomId: "660f746afd0a66fcc8c831b5",
+    hotelId,
+    roomId,
+    packageId,
     startDate: _googleStartDate,
     endDate: _googleEndDate,
     packageId: packageId,
     amountBeforeTax: rate,
-    hotelId: 20,
   });
 
   try {
@@ -78,17 +80,9 @@ async function updateBulkRate(req, res) {
     }
     const _package = await Package.findById(packageId);
     const data = _package.data;
-    for (
-      let curDate = new Date(startDate);
-      curDate <= new Date(endDate);
-      curDate.setDate(curDate.getDate() + 1)
-    ) {
+    for (let curDate = new Date(startDate); curDate <= new Date(endDate); curDate.setDate(curDate.getDate() + 1)) {
       if (data.get(dayjs(curDate).format("YYYY/MM/DD")) == undefined) {
-        data.set(dayjs(curDate).format("YYYY/MM/DD"), [
-          rate,
-          config.DEFAULT_AVAILABILITY,
-          config.DEFAULT_INVENTORY,
-        ]);
+        data.set(dayjs(curDate).format("YYYY/MM/DD"), [rate, config.DEFAULT_AVAILABILITY, config.DEFAULT_INVENTORY]);
       } else {
         const dataArray = data.get(dayjs(curDate).format("YYYY/MM/DD"));
         dataArray[0] = rate;

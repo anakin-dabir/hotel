@@ -7,7 +7,13 @@ const hotelSchema = new mongoose.Schema(
     tagLine: String,
     images: [{ type: String, default: "" }],
     rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
-
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    social: {
+      email: String,
+      phone: String,
+      owner: String,
+      website: String,
+    },
     address: {
       location: String,
       country: String,
@@ -18,17 +24,11 @@ const hotelSchema = new mongoose.Schema(
       longitude: String,
     },
 
-    social: {
-      email: String,
-      phone: String,
-      owner: String,
-      website: String,
-    },
-
     time: {
-      chekinTime: String,
+      checkinTime: String,
       checkoutTime: String,
     },
+    amenities: [String],
   },
 
   {

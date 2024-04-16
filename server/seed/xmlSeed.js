@@ -1,5 +1,6 @@
 import generateId from "../utils/generateId.js";
 import getTimestamp from "../utils/getTimestamp.js";
+import config from "../config/config.js";
 
 // Date format Must be YYYY-MM-DD
 const PARTNER_KEY = "proexsus_56786238";
@@ -31,47 +32,58 @@ const RATEXML = ({ date, roomId, hotelId }) => {
 `;
 };
 
-const addRoom = ({
-  hotelId = 10,
-  roomId,
-  name,
-  capacity,
-  packageId,
-  packageName,
-  packageId2,
-  packageName2,
-}) => {
+const addRoom = ({ hotelId = 10, roomId, roomData, packageId }) => {
+  const { name, description, capacity, features, washroom } = roomData;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Transaction timestamp="${getTimestamp()}"
              id="${generateId()}"
              partner="${PARTNER_KEY}">
-  <PropertyDataSet action="overlay">
+  <PropertyDataSet action="delta">
     <Property>${hotelId}</Property>
     <RoomData>
       <RoomID>${roomId}</RoomID>
       <Name>
         <Text text="${name}" language="en"/>
       </Name>
-      <Capacity>4</Capacity>
-      <AdultCapacity>4</AdultCapacity>
-      <ChildCapacity>3</ChildCapacity>
-       <AllowablePackageIDs>
-        <AllowablePackageID>${packageId}</AllowablePackageID>
-        <AllowablePackageID>${packageId2}</AllowablePackageID>
-      </AllowablePackageIDs>
+      <Description>
+        <Text text="${description}" language="en"/>
+      </Description>
+      <Capacity>${capacity.maxCapacity}</Capacity>
+      <AdultCapacity>${capacity.adultCapacity}</AdultCapacity>
+      ${capacity?.childCapacity && `<ChildCapacity>${capacity.childCapacity}</ChildCapacity>`}
+      <OccupancySettings>
+        <MinOccupancy>${capacity.minCapacity}</MinOccupancy>
+        <MinAge>${capacity.minAge}</MinAge>
+      </OccupancySettings>
+      <RoomFeatures>
+        <Beds>
+        ${roomData.beds
+          .map(bed => {
+            return `<Bed size="${
+              bed === "Single" ? "single" : bed === "Semi Double" ? "semi_double" : bed === "Double" ? "double" : bed === "Queen" ? "queen" : "king"
+            }"></Bed>`;
+          })
+          .join("")}
+        </Beds>
+        <MobilityAccessible/>
+        <Smoking>${features.smoking ? "smoking" : "non_smoking"}</Smoking>
+        <BathAndToilet relation="${washroom.relation === "Together" ? "together" : "separate"}">
+          <Bath bathtub="${!washroom.bathTub ? "false" : "true"}" shower="${!washroom.shower ? "false" : "true"}"/>
+          <Toilet electronic_bidet="${washroom.electronicBidet ? "true" : "false"}" mobility_accessible="${washroom.mobilityAccessible ? "true" : "false"}"/>
+        </BathAndToilet>
+        ${features.openAirBath ? `<OpenAirBath/>` : ``}
+        ${features.airConditioning ? `<AirConditioning/>` : ``}
+        ${features.balcony ? `<Balcony/>` : ``}
+      </RoomFeatures>
     </RoomData>
-     <PackageData>
+    <PackageData>
       <PackageID>${packageId}</PackageID>
       <Name>
-        <Text text="${packageName}" language="en"/>
+        <Text text="${config.DEFAULT_PACKAGE_DETAILS.NAME}" language="en"/>
       </Name>
-    </PackageData>
-     <PackageData>
-      <PackageID>${packageId2}</PackageID>
-      <Name>
-        <Text text="${packageName2}" language="en"/>
-      </Name>
-      <ParkingIncluded>true</ParkingIncluded>
+      <Description>
+        <Text text="${config.DEFAULT_PACKAGE_DETAILS.DESCRIPTION}" language="en"/>
+      </Description>
     </PackageData>
   </PropertyDataSet>
 </Transaction>
@@ -92,7 +104,7 @@ const removeAllRooms = ({ hotelId = 10 }) => {
 
 const addInventory = ({ hotelId = 10, roomId, startDate, endDate, inventory }) => {
   return `<OTA_HotelInvCountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
-                          EchoToken="${generateId}"
+                          EchoToken="${generateId()}"
                           TimeStamp="${getTimestamp()}"
                           Version="3.0">
   <POS>
@@ -114,15 +126,7 @@ const addInventory = ({ hotelId = 10, roomId, startDate, endDate, inventory }) =
 `;
 };
 
-const addRate = ({
-  hotelId = 10,
-  startDate,
-  endDate,
-  roomId,
-  currency = "INR",
-  amountBeforeTax = 99,
-  packageId,
-}) => {
+const addRate = ({ hotelId = 10, startDate, endDate, roomId, currency = "INR", amountBeforeTax = 99, packageId }) => {
   console.log(amountBeforeTax);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <OTA_HotelRateAmountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
@@ -154,19 +158,17 @@ const addRate = ({
 `;
 };
 
-const toggleAvailability = ({
-  hotelId = 10,
-  roomId,
-  startDate,
-  endDate,
-  packageId,
-  available = false,
-}) => {
+const toggleAvailability = ({ hotelId = 10, roomId, startDate, endDate, packageId, available = false }) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <OTA_HotelAvailNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
                        EchoToken="${generateId()}"
                        TimeStamp="${getTimestamp()}"
                        Version="3.0">
+  <POS>
+    <Source>
+      <RequestorID ID="${PARTNER_KEY}"/>
+    </Source>
+  </POS>
   <AvailStatusMessages HotelCode="${hotelId}">
     <AvailStatusMessage>
       <StatusApplicationControl Start="${startDate}"

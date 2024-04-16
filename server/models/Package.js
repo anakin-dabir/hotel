@@ -37,7 +37,6 @@ const packageSchema = new mongoose.Schema(
       },
     ],
 
-    
     data: {
       type: Map,
       String: [

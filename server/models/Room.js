@@ -12,8 +12,8 @@ const roomSchema = new mongoose.Schema(
       totalCapacity: { type: Number, default: 0 },
       adultCapacity: { type: Number, default: 0 },
       childCapacity: { type: Number, default: 0 },
-      minCapacity: { type: Number, default: 0 },
-      minAge: { type: Number, default: 0 },
+      minCapacity: { type: Number, default: 1 },
+      minAge: { type: Number, default: 10 },
     },
 
     features: {
@@ -25,14 +25,14 @@ const roomSchema = new mongoose.Schema(
       balcony: { type: Boolean, default: false },
     },
 
-    beds: [
-      {
-        size: { type: String, enum: ["Single", "Semi Double", "Double", "Queen", "King"] },
-        width: Number,
-        height: Number,
-        unit: { type: String, default: "cm" },
-      },
-    ],
+    beds: [String],
+    // {
+    //   size: { type: String, enum: ["Single", "Semi Double", "Double", "Queen", "King"] },
+    //   width: Number,
+    //   height: Number,
+    //   unit: { type: String, default: "cm" },
+    //   quantity: Number,
+    // },
 
     washroom: {
       // bathAndToilet

@@ -8,11 +8,6 @@ import config from "./config/config.js";
 
 async function init() {
   const server = http.createServer(app);
-  app.post("/some-route", (req, res) => {
-    console.log(req.headers); // Inspect the headers on incoming requests
-    // ...
-  });
-
   app.get("/", (req, res) => res.send("SERVER LISTENING ..."));
   app.use("/room", roomRouter);
   app.use("/package", packageRouter);
@@ -20,9 +15,7 @@ async function init() {
 
   // console.log(dayjs("2024-03-30").format("DD-MM-YYYY"));
   connectDb(config.MONGO || "mongodb://127.0.0.1:27017/Hotel");
-  server.listen(process.env.PORT || config.PORT, () =>
-    console.log(`Example app listening on PORT:${process.env.PORT} ...`)
-  );
+  server.listen(process.env.PORT || config.PORT, () => console.log("Example app listening ..."));
 }
 
 init();
