@@ -4,6 +4,7 @@ const hotelSchema = new mongoose.Schema(
   {
     name: String,
     description: String,
+    id: String,
     tagLine: String,
     images: [{ type: String, default: "" }],
     rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
