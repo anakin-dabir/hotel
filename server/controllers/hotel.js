@@ -5,12 +5,23 @@ import generateToken from "../utils/generateToken.js";
 import generateId from "../utils/generateId.js";
 import dayjs from "dayjs";
 
-async function get(req, res) {}
+async function get(req, res) {
+  const { hotelId } = req.params;
+  try {
+    const hotel = await Hotel.findOne({ id: hotelId });
+    return res.status(200).json({ message: "", data: hotel });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
 
 async function getRoomsByHotelID(req, res) {
   const { hotelId } = req.params;
   try {
-    const rooms = await Room.find({ hotel: hotelId }, "name images description capacity").populate("packages", "name");
+    const rooms = await Room.find({ hotel: hotelId }, "name images description capacity").populate(
+      "packages",
+      "name"
+    );
 
     return res.status(200).json({ message: "", data: rooms });
   } catch (error) {}
@@ -20,7 +31,8 @@ async function login(req, res) {
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "Invalid email, Try again" });
-    if (!user.isMatchedPassword(password)) return res.status(404).json({ message: "Incorrect Password, Try Again" });
+    if (!user.isMatchedPassword(password))
+      return res.status(404).json({ message: "Incorrect Password, Try Again" });
 
     let hotel = {};
     if (user.isSuperAdmin) {
@@ -110,4 +122,18 @@ async function getDataByHotelId(req, res) {
   }
 }
 
-export { get, getRoomsByHotelID, login, create, getDataByHotelId };
+async function getBulkData(req, res) {
+  const { hotelId } = req.params;
+  try {
+    const hotel = await Hotel.findOne({ id: hotelId }, "_id");
+    const rooms = await Room.find({ hotel: hotel._id }).populate({
+      path: "packages",
+    });
+
+    return res.status(200).json({ message: "", data: rooms });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export { get, getRoomsByHotelID, login, create, getDataByHotelId, getBulkData };
