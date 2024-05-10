@@ -1,48 +1,67 @@
 import dayjs from "dayjs";
 import Package from "../models/Package.js";
 import config from "../config/config.js";
-import { addRate } from "../seed/xmlSeed.js";
+import { addRate, toggleAvailability } from "../seed/xmlSeed.js";
 import axios from "axios";
-import { RATE } from "../seed/googleEndpoints.js";
+import { AVAILABILITY, RATE } from "../seed/googleEndpoints.js";
 import _googleError from "../utils/_googleError.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
+import PackageData from "../models/PackageData.js";
+
 async function updateRate(req, res) {
   const {
     hotelId,
     roomId,
     packageId,
     date,
-    data: { rate },
+    data: { rate, availability },
   } = req.body;
 
-  const _googleDate = dayjs(date).format("YYYY-MM-DD");
-  const _googlePrice = addRate({
-    hotelId,
-    roomId,
-    packageId,
-    startDate: _googleDate,
-    endDate: _googleDate,
-    packageId: packageId,
-    amountBeforeTax: rate,
-  });
+  const _date = dayjs(date).format("YYYY-MM-DD");
+  // const _googlePrice = addRate({
+  //   hotelId,
+  //   roomId,
+  //   packageId,
+  //   startDate: _date,
+  //   endDate: _date,
+  //   packageId: packageId,
+  //   amountBeforeTax: rate,
+  // });
+
+  // const _googleAvailability = toggleAvailability({
+  //   hotelId,
+  //   roomId,
+  //   packageId,
+  //   startDate: _date,
+  //   endDate: _date,
+  //   available: availability,
+  // });
+
+  // const _googlePriceRequest = axios.post(RATE, _googlePrice, config.FETCH_OPTIONS);
+  // const _googleAvailabilityRequest = axios.post(
+  //   AVAILABILITY,
+  //   _googleAvailability,
+  //   config.FETCH_OPTIONS
+  // );
+
+  // try {
+  //   const responses = await Promise.all([_googlePriceRequest, _googleAvailabilityRequest]);
+  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+  //   if (ERROR) {
+  //     return res.status(STATUS).json({ message: MESSAGE });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: _googleError(error) });
+  // }
 
   try {
-    const _googleResponse = await axios.post(RATE, _googlePrice, config.FETCH_OPTIONS);
-    const { ERROR, STATUS, MESSAGE } = _googleResponseError(_googleResponse);
-    if (ERROR) {
-      return res.status(STATUS).json({ message: MESSAGE });
-    }
-    const _package = await Package.findById(packageId);
-    const data = _package.data;
-    if (data.get(dayjs(date).format("YYYY/MM/DD")) == undefined) {
-      data.set(dayjs(date).format("YYYY/MM/DD"), [rate, config.DEFAULT_AVAILABILITY, config.DEFAULT_INVENTORY]);
-    } else {
-      const dataArray = data.get(dayjs(date).format("YYYY/MM/DD"));
-      dataArray[0] = rate;
-    }
-    _package.markModified("data");
-    await _package.save();
-    return res.status(200).json({ message: "Updated Successfully", data: _package });
+    const _package = await PackageData.updateOne(
+      { _id: `${packageId}_${_date}` },
+      { $set: { price: rate, availability } },
+      { upsert: true }
+    );
+
+    return res.status(200).json({ message: "Updated Successfully", data: null });
   } catch (error) {
     return res.status(500).json({
       message: _googleError(error),
@@ -57,40 +76,60 @@ async function updateBulkRate(req, res) {
     roomId,
     packageId,
     date: { startDate, endDate },
-    data: { rate },
+    data: { rate, availability },
   } = req.body;
 
-  const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
-  const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
-  const _googlePrice = addRate({
-    hotelId,
-    roomId,
-    packageId,
-    startDate: _googleStartDate,
-    endDate: _googleEndDate,
-    packageId: packageId,
-    amountBeforeTax: rate,
-  });
+  // const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
+  // const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
+  // const _googlePrice = addRate({
+  //   roomId,
+  //   startDate: _googleStartDate,
+  //   endDate: _googleEndDate,
+  //   packageId: packageId,
+  //   amountBeforeTax: rate,
+  //   hotelId,
+  // });
 
+  // const _googleAvailability = toggleAvailability({
+  //   roomId,
+  //   startDate: _googleStartDate,
+  //   endDate: _googleEndDate,
+  //   packageId,
+  //   available: availability,
+  //   hotelId,
+  // });
+
+  // const _googlePriceRequest = axios.post(RATE, _googlePrice, config.FETCH_OPTIONS);
+  // const _googleAvailabilityRequest = axios.post(
+  //   AVAILABILITY,
+  //   _googleAvailability,
+  //   config.FETCH_OPTIONS
+  // );
+
+  // try {
+  //   const responses = await Promise.all([_googlePriceRequest, _googleAvailabilityRequest]);
+  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+  //   if (ERROR) {
+  //     return res.status(STATUS).json({ message: MESSAGE });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: _googleError(error) });
+  // }
+
+  let packageOps = [];
+  for (let date = dayjs(startDate); !date.isAfter(dayjs(endDate)); date = date.add(1, "day")) {
+    const dateStr = date.format("YYYY-MM-DD");
+    const _id = `${packageId}_${dateStr}`;
+    packageOps.push({
+      updateOne: {
+        filter: { _id },
+        update: { $set: { availability, price: rate } },
+        upsert: true,
+      },
+    });
+  }
   try {
-    const _googleResponse = await axios.post(RATE, _googlePrice, config.FETCH_OPTIONS);
-    const { ERROR, STATUS, MESSAGE } = _googleResponseError(_googleResponse);
-    if (ERROR) {
-      return res.status(STATUS).json({ message: MESSAGE });
-    }
-    const _package = await Package.findById(packageId);
-    const data = _package.data;
-    for (let curDate = new Date(startDate); curDate <= new Date(endDate); curDate.setDate(curDate.getDate() + 1)) {
-      if (data.get(dayjs(curDate).format("YYYY/MM/DD")) == undefined) {
-        data.set(dayjs(curDate).format("YYYY/MM/DD"), [rate, config.DEFAULT_AVAILABILITY, config.DEFAULT_INVENTORY]);
-      } else {
-        const dataArray = data.get(dayjs(curDate).format("YYYY/MM/DD"));
-        dataArray[0] = rate;
-      }
-    }
-    _package.markModified("data");
-    await _package.save();
-    return res.status(200).json({ message: "Updated successfully", data: _package });
+    await PackageData.bulkWrite(packageOps);
   } catch (error) {
     return res.status(500).json({
       message: _googleError(error),

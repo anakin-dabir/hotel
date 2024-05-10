@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import AutoIncrement from "./AutoIncrement.js";
 
 const packageSchema = new mongoose.Schema(
   {
+    _id: Number,
     name: String,
     description: String,
-    room: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
+    room: { type: Number, ref: "Room" },
 
     time: {
       checkInTime: String,
@@ -13,13 +15,11 @@ const packageSchema = new mongoose.Schema(
 
     refundable: {
       available: { type: Boolean, default: false },
-      refundableUntilDate: String,
       refundableUntilTime: String,
     },
 
     features: {
       internet: Boolean,
-      breakFast: Boolean,
     },
 
     parking: {
@@ -27,44 +27,33 @@ const packageSchema = new mongoose.Schema(
       rule: String,
     },
 
-    meals: [
-      {
-        name: { type: String, enum: ["Breakfast", "Dinner"] },
-        available: Boolean,
-        buffet: Boolean,
-        inRoom: Boolean,
-        inPrivateSpace: Boolean,
-      },
-    ],
-
-    data: {
-      type: Map,
-      String: [
-        { type: String, default: "0" },
-        { type: Boolean, default: false },
-        { type: Number, default: 0 },
-      ],
-      default: {},
-    },
+    meals: [],
+    //   {
+    //     name: { type: String, enum: ["Breakfast", "Dinner"] },
+    //     available: Boolean,
+    //     buffet: Boolean,
+    //     inRoom: Boolean,
+    //     inPrivateSpace: Boolean,
+    //   },
   },
   {
-    timestamps: true,
     collection: "Package",
   }
 );
 
+packageSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    try {
+      const counter = await AutoIncrement.findByIdAndUpdate(
+        { _id: "increment" },
+        { $inc: { packageId: 1 } },
+        { new: true, upsert: true }
+      );
+      this._id = counter.packageId;
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
 export default mongoose.model("Package", packageSchema);
-
-//  type: Map, // year
-//       of: {
-//         type: Map, //month
-//         of: {
-//           type: Map, //day
-//           of: {
-//             _id: String,
-//             price: Number,
-//             availability: Boolean,
-//             inventory: Number,
-//           },
-//         },
-//       },

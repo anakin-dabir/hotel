@@ -7,7 +7,7 @@ const hotelSchema = new mongoose.Schema(
     tagLine: String,
     id: Number,
     images: [{ type: String, default: "" }],
-    rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: "Room" }],
+    rooms: [{ type: Number, ref: "Room" }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     social: {
       email: String,
@@ -31,9 +31,7 @@ const hotelSchema = new mongoose.Schema(
     },
     amenities: [String],
   },
-
   {
-    timestamps: true,
     collection: "Hotel",
   }
 );

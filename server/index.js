@@ -4,6 +4,7 @@ import connectDb from "./services/db.js";
 import roomRouter from "./routes/v1/room.js";
 import packageRouter from "./routes/v1/package.js";
 import hotelRouter from "./routes/v1/hotel.js";
+import orderRouter from "./routes/v1/order.js";
 import config from "./config/config.js";
 
 async function init() {
@@ -12,10 +13,13 @@ async function init() {
   app.use("/room", roomRouter);
   app.use("/package", packageRouter);
   app.use("/hotel", hotelRouter);
+  app.use("/order", orderRouter);
 
-  // console.log(dayjs("2024-03-30").format("DD-MM-YYYY"));
+  // console.log(dayjs("2024-03-30").isAfter("2024-03-30"));
   connectDb(config.MONGO || "mongodb://127.0.0.1:27017/Hotel");
-  server.listen(process.env.PORT || config.PORT, () => console.log("Example app listening ..."));
+  server.listen(process.env.PORT || config.PORT, () =>
+    console.log("Example app listening ..." + process.env.PORT || config.env.PORT)
+  );
 }
 
 init();

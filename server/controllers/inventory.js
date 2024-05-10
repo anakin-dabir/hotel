@@ -6,63 +6,63 @@ import { AVAILABILITY, INVENTORY } from "../seed/googleEndpoints.js";
 import axios from "axios";
 import _googleError from "../utils/_googleError.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
+import InventoryData from "../models/InventoryData.js";
+import PackageData from "../models/PackageData.js";
+
 async function updateInventory(req, res) {
   const {
     hotelId,
     roomId,
     packageId,
     date,
-    data: { inventory, availability },
+    data: { inventory },
   } = req.body;
 
-  const _googleDate = dayjs(date).format("YYYY-MM-DD");
-  const _googleInventory = addInventory({
-    hotelId,
-    packageId,
-    roomId,
-    startDate: _googleDate,
-    endDate: _googleDate,
-    inventory: inventory,
-  });
-  console.log(_googleInventory);
+  const _date = dayjs(date).format("YYYY-MM-DD");
+  // const _googleInventory = addInventory({
+  //   hotelId,
+  //   packageId,
+  //   roomId,
+  //   startDate: _date,
+  //   endDate: _date,
+  //   inventory: inventory,
+  // });
 
-  const _googleAvailability = toggleAvailability({
-    hotelId,
-    packageId,
-    roomId,
-    startDate: _googleDate,
-    endDate: _googleDate,
-    packageId: packageId,
-    available: availability,
-  });
+  // const _googleAvailability = toggleAvailability({
+  //   hotelId,
+  //   packageId,
+  //   roomId,
+  //   startDate: _date,
+  //   endDate: _date,
+  //   packageId: packageId,
+  //   available: availability,
+  // });
 
-  const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  const _googleAvailabilityRequest = axios.post(AVAILABILITY, _googleAvailability, config.FETCH_OPTIONS);
+  // const _googleAvailabilityRequest = axios.post(
+  //   AVAILABILITY,
+  //   _googleAvailability,
+  //   config.FETCH_OPTIONS
+  // );
+
+  // try {
+  //   const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
+  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+  //   console.log({ ERROR, STATUS, MESSAGE });
+  //   if (ERROR) {
+  //     return res.status(STATUS).json({ message: MESSAGE });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: _googleError(error) });
+  // }
 
   try {
-    const responses = await Promise.all([_googleInventoryRequest, _googleAvailabilityRequest]);
-    const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
-    console.log({ ERROR, STATUS, MESSAGE });
-    if (ERROR) {
-      return res.status(STATUS).json({ message: MESSAGE });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: _googleError(error) });
-  }
+    await InventoryData.updateOne(
+      { _id: `${roomId}_${_date}` },
+      { $set: { inventory } },
+      { upsert: true }
+    );
 
-  try {
-    const _package = await Package.findById(packageId);
-    const data = _package.data;
-    if (data.get(dayjs(date).format("YYYY/MM/DD")) == undefined) {
-      data.set(dayjs(date).format("YYYY/MM/DD"), [config.DEFAULT_RATE, availability, inventory]);
-    } else {
-      const dataArray = data.get(dayjs(date).format("YYYY/MM/DD"));
-      dataArray[1] = availability;
-      dataArray[2] = inventory;
-    }
-    _package.markModified("data");
-    await _package.save();
-    return res.status(200).json({ message: "Updated Successfully", data: _package });
+    return res.status(200).json({ message: "Updated Successfully", data: null });
   } catch (error) {}
 }
 
@@ -72,59 +72,63 @@ async function updateBulkInventory(req, res) {
     packageId,
     roomId,
     date: { startDate, endDate },
-    data: { inventory, availability },
+    data: { inventory },
   } = req.body;
 
   const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
   const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
-  const _googleInventory = addInventory({
-    hotelId,
-    packageId,
-    roomId,
-    startDate: _googleStartDate,
-    endDate: _googleEndDate,
-    inventory: inventory,
-  });
+  // const _googleInventory = addInventory({
+  //   hotelId,
+  //   packageId,
+  //   roomId,
+  //   startDate: _googleStartDate,
+  //   endDate: _googleEndDate,
+  //   inventory: inventory,
+  // });
 
-  const _googleAvailability = toggleAvailability({
-    hotelId,
-    packageId,
-    roomId,
-    startDate: _googleStartDate,
-    endDate: _googleEndDate,
-    packageId: packageId,
-    available: availability,
-  });
+  // const _googleAvailability = toggleAvailability({
+  //   hotelId,
+  //   packageId,
+  //   roomId,
+  //   startDate: _googleStartDate,
+  //   endDate: _googleEndDate,
+  //   packageId: packageId,
+  //   available: availability,
+  // });
 
-  const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  const _googleAvailabilityRequest = axios.post(AVAILABILITY, _googleAvailability, config.FETCH_OPTIONS);
+  // const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
+  // const _googleAvailabilityRequest = axios.post(
+  //   AVAILABILITY,
+  //   _googleAvailability,
+  //   config.FETCH_OPTIONS
+  // );
 
-  try {
-    const responses = await Promise.all([_googleInventoryRequest, _googleAvailabilityRequest]);
-    const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
-    console.log({ ERROR, STATUS, MESSAGE });
-    if (ERROR) {
-      return res.status(STATUS).json({ message: MESSAGE });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: _googleError(error) });
+  // try {
+  //   const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
+  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+  //   console.log({ ERROR, STATUS, MESSAGE });
+  //   if (ERROR) {
+  //     return res.status(STATUS).json({ message: MESSAGE });
+  //   }
+  // } catch (error) {
+  //   return res.status(500).json({ message: _googleError(error) });
+  // }
+
+  let inventoryOps = [];
+  for (let date = dayjs(startDate); !date.isAfter(dayjs(endDate)); date = date.add(1, "day")) {
+    const dateStr = date.format("YYYY-MM-DD");
+    const _id = `${roomId}_${dateStr}`;
+    inventoryOps.push({
+      updateOne: {
+        filter: { _id },
+        update: { $set: { inventory } },
+        upsert: true,
+      },
+    });
   }
-
   try {
-    const _package = await Package.findById(packageId);
-    const data = _package.data;
-    for (let curDate = new Date(startDate); curDate <= new Date(endDate); curDate.setDate(curDate.getDate() + 1)) {
-      if (data.get(dayjs(curDate).format("YYYY/MM/DD")) == undefined) {
-        data.set(dayjs(curDate).format("YYYY/MM/DD"), [config.DEFAULT_RATE, availability, inventory]);
-      } else {
-        const dataArray = data.get(dayjs(curDate).format("YYYY/MM/DD"));
-        dataArray[1] = availability;
-        dataArray[2] = inventory;
-      }
-    }
-    _package.markModified("data");
-    await _package.save();
-    return res.status(200).json({ message: "Updated successfully", data: _package });
+    await InventoryData.bulkWrite(inventoryOps);
+    return res.status(200).json({ message: "Updated successfully", data: null });
   } catch (error) {}
 }
 

@@ -32,7 +32,86 @@ const RATEXML = ({ date, roomId, hotelId }) => {
 `;
 };
 
-const addRoom = ({ hotelId = 10, roomId, roomData, packageId }) => {
+const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => {
+  const { name, description, capacity, features, washroom } = roomData;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Transaction timestamp="${getTimestamp()}"
+             id="${generateId()}"
+             partner="${PARTNER_KEY}">
+  <PropertyDataSet action="delta">
+    <Property>${hotelId}</Property>
+    <RoomData>
+      <RoomID>${roomId}</RoomID>
+      <Name>
+        <Text text="${name}" language="en"/>
+      </Name>
+      <Description>
+        <Text text="${description}" language="en"/>
+      </Description>
+       <AllowablePackageIDs>
+        <AllowablePackageID>${packageId}</AllowablePackageID>
+      </AllowablePackageIDs>
+      <Capacity>${capacity.maxCapacity}</Capacity>
+      <AdultCapacity>${capacity.adultCapacity}</AdultCapacity>
+      ${capacity?.childCapacity && `<ChildCapacity>${capacity.childCapacity}</ChildCapacity>`}
+      <OccupancySettings>
+        <MinOccupancy>${capacity.minCapacity}</MinOccupancy>
+        <MinAge>${capacity.minAge}</MinAge>
+      </OccupancySettings>
+      <RoomFeatures>
+        <Beds>
+        ${roomData.beds
+          .map((bed) => {
+            return `<Bed size="${
+              bed === "Single"
+                ? "single"
+                : bed === "Semi Double"
+                ? "semi_double"
+                : bed === "Double"
+                ? "double"
+                : bed === "Queen"
+                ? "queen"
+                : "king"
+            }"></Bed>`;
+          })
+          .join("")}
+        </Beds>
+        <MobilityAccessible/>
+        <Smoking>${features.smoking ? "smoking" : "non_smoking"}</Smoking>
+        <BathAndToilet relation="${washroom.relation === "Together" ? "together" : "separate"}">
+          <Bath bathtub="${!washroom.bathTub ? "false" : "true"}" shower="${
+    !washroom.shower ? "false" : "true"
+  }"/>
+          <Toilet electronic_bidet="${
+            washroom.electronicBidet ? "true" : "false"
+          }" mobility_accessible="${washroom.mobilityAccessible ? "true" : "false"}"/>
+        </BathAndToilet>
+        ${features.openAirBath ? `<OpenAirBath/>` : ``}
+        ${features.airConditioning ? `<AirConditioning/>` : ``}
+        ${features.balcony ? `<Balcony/>` : ``}
+      </RoomFeatures>
+    </RoomData>
+    <PackageData>
+      <PackageID>${packageId}</PackageID>
+      <Name>
+        <Text text="${packageData.name}" language="en"/>
+      </Name>
+      <Description>
+        <Text text="${packageData.description}" language="en"/>
+      </Description>
+      <AllowableRoomIDs>
+        <AllowableRoomID>${roomId}</AllowableRoomID>
+      </AllowableRoomIDs>
+      <Refundable available="${packageData.refundable ? "true" : "false"}" />
+      <InternetIncluded>"${packageData.internet ? "true" : "false"}"</InternetIncluded>
+      <ParkingIncluded>"${packageData.parking ? "true" : "false"}"</ParkingIncluded>
+    </PackageData>
+  </PropertyDataSet>
+</Transaction>
+`;
+};
+
+const updateRoom = ({ hotelId = 10, roomId, roomData }) => {
   const { name, description, capacity, features, washroom } = roomData;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Transaction timestamp="${getTimestamp()}"
@@ -58,9 +137,17 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId }) => {
       <RoomFeatures>
         <Beds>
         ${roomData.beds
-          .map(bed => {
+          .map((bed) => {
             return `<Bed size="${
-              bed === "Single" ? "single" : bed === "Semi Double" ? "semi_double" : bed === "Double" ? "double" : bed === "Queen" ? "queen" : "king"
+              bed === "Single"
+                ? "single"
+                : bed === "Semi Double"
+                ? "semi_double"
+                : bed === "Double"
+                ? "double"
+                : bed === "Queen"
+                ? "queen"
+                : "king"
             }"></Bed>`;
           })
           .join("")}
@@ -68,23 +155,18 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId }) => {
         <MobilityAccessible/>
         <Smoking>${features.smoking ? "smoking" : "non_smoking"}</Smoking>
         <BathAndToilet relation="${washroom.relation === "Together" ? "together" : "separate"}">
-          <Bath bathtub="${!washroom.bathTub ? "false" : "true"}" shower="${!washroom.shower ? "false" : "true"}"/>
-          <Toilet electronic_bidet="${washroom.electronicBidet ? "true" : "false"}" mobility_accessible="${washroom.mobilityAccessible ? "true" : "false"}"/>
+          <Bath bathtub="${!washroom.bathTub ? "false" : "true"}" shower="${
+    !washroom.shower ? "false" : "true"
+  }"/>
+          <Toilet electronic_bidet="${
+            washroom.electronicBidet ? "true" : "false"
+          }" mobility_accessible="${washroom.mobilityAccessible ? "true" : "false"}"/>
         </BathAndToilet>
         ${features.openAirBath ? `<OpenAirBath/>` : ``}
         ${features.airConditioning ? `<AirConditioning/>` : ``}
         ${features.balcony ? `<Balcony/>` : ``}
       </RoomFeatures>
     </RoomData>
-    <PackageData>
-      <PackageID>${packageId}</PackageID>
-      <Name>
-        <Text text="${config.DEFAULT_PACKAGE_DETAILS.NAME}" language="en"/>
-      </Name>
-      <Description>
-        <Text text="${config.DEFAULT_PACKAGE_DETAILS.DESCRIPTION}" language="en"/>
-      </Description>
-    </PackageData>
   </PropertyDataSet>
 </Transaction>
 `;
@@ -126,7 +208,15 @@ const addInventory = ({ hotelId = 10, roomId, startDate, endDate, inventory }) =
 `;
 };
 
-const addRate = ({ hotelId = 10, startDate, endDate, roomId, currency = "INR", amountBeforeTax = 99, packageId }) => {
+const addRate = ({
+  hotelId = 10,
+  startDate,
+  endDate,
+  roomId,
+  currency = "INR",
+  amountBeforeTax = 99,
+  packageId,
+}) => {
   console.log(amountBeforeTax);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <OTA_HotelRateAmountNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
@@ -158,7 +248,14 @@ const addRate = ({ hotelId = 10, startDate, endDate, roomId, currency = "INR", a
 `;
 };
 
-const toggleAvailability = ({ hotelId = 10, roomId, startDate, endDate, packageId, available = false }) => {
+const toggleAvailability = ({
+  hotelId = 10,
+  roomId,
+  startDate,
+  endDate,
+  packageId,
+  available = false,
+}) => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <OTA_HotelAvailNotifRQ xmlns="http://www.opentravel.org/OTA/2003/05"
                        EchoToken="${generateId()}"
@@ -182,4 +279,132 @@ const toggleAvailability = ({ hotelId = 10, roomId, startDate, endDate, packageI
 `;
 };
 
-export { addRoom, addInventory, addRate, toggleAvailability };
+const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages }) => {
+  const {
+    name,
+    description,
+    refundable,
+    refundableUntilTime,
+    internet,
+    parking,
+    meals,
+    checkInTime,
+    checkOutTime,
+  } = packageData;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Transaction timestamp="${getTimestamp()}"
+             id="${generateId()}"
+             partner="${PARTNER_KEY}">
+  <PropertyDataSet action="delta">
+    <Property>${hotelId}</Property>
+    <RoomData>
+      <RoomID>${roomId}</RoomID>
+      <AllowablePackageIDs>
+       ${packages
+         .map((_package) => {
+           return `<AllowablePackageID>${_package}</AllowablePackageID>`;
+         })
+         .join("")}
+        <AllowablePackageID>${packageId}</AllowablePackageID>
+      </AllowablePackageIDs>
+    </RoomData>
+    <PackageData>
+      <PackageID>${packageId}</PackageID>
+      <Name>
+        <Text text="${name}" language="en"/>
+      </Name>
+      <Description>
+        <Text text="${description}" language="en"/>
+      </Description>
+      <AllowableRoomIDs>
+        <AllowableRoomID>${roomId}</AllowableRoomID>
+      </AllowableRoomIDs>
+      ${
+        !refundable
+          ? `<Refundable available="false"  />`
+          : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
+      }
+      <InternetIncluded>"${internet ? "true" : "false"}"</InternetIncluded>
+      <ParkingIncluded>"${parking ? "true" : "false"}"</ParkingIncluded>
+      <CheckinTime>"${checkInTime}"</CheckinTime>
+      <CheckoutTime>"${checkOutTime}"</CheckoutTime>
+      ${meals
+        .map((meal) => {
+          return meal === "Breakfast"
+            ? `<Breakfast included="true" />`
+            : meal === "Dinner"
+            ? `<Dinner included="true" />`
+            : ``;
+        })
+        .join("")}
+    </PackageData>
+  </PropertyDataSet>
+</Transaction>
+`;
+};
+
+const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
+  const {
+    name,
+    description,
+    refundable,
+    refundableUntilTime,
+    internet,
+    parking,
+    meals,
+    checkInTime,
+    checkOutTime,
+  } = packageData;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<Transaction timestamp="${getTimestamp()}"
+             id="${generateId()}"
+             partner="${PARTNER_KEY}">
+  <PropertyDataSet action="delta">
+    <Property>${hotelId}</Property>
+    <RoomData>
+      <RoomID>${roomId}</RoomID>
+    </RoomData>
+    <PackageData>
+      <PackageID>${packageId}</PackageID>
+      <Name>
+        <Text text="${name}" language="en"/>
+      </Name>
+      <Description>
+        <Text text="${description}" language="en"/>
+      </Description>
+      <AllowableRoomIDs>
+        <AllowableRoomID>${roomId}</AllowableRoomID>
+      </AllowableRoomIDs>
+      ${
+        !refundable
+          ? `<Refundable available="false"  />`
+          : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
+      }
+      <InternetIncluded>"${internet ? "true" : "false"}"</InternetIncluded>
+      <ParkingIncluded>"${parking ? "true" : "false"}"</ParkingIncluded>
+      <CheckinTime>"${checkInTime}"</CheckinTime>
+      <CheckoutTime>"${checkOutTime}"</CheckoutTime>
+      ${meals
+        .map((meal) => {
+          return meal === "Breakfast"
+            ? `<Breakfast included="true" />`
+            : meal === "Dinner"
+            ? `<Dinner included="true" />`
+            : ``;
+        })
+        .join("")}
+    </PackageData>
+  </PropertyDataSet>
+</Transaction>
+`;
+};
+
+export {
+  addRoom,
+  addInventory,
+  addRate,
+  toggleAvailability,
+  updateRoom,
+  createPackage,
+  _updatePackage,
+};

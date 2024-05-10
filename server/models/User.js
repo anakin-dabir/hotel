@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema(
     hotel: { type: mongoose.Schema.Types.ObjectId, ref: "Hotel" },
   },
   {
-    timestamps: true,
     collection: "User",
   }
 );

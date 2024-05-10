@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
+import AutoIncrement from "./AutoIncrement.js";
 
 const roomSchema = new mongoose.Schema(
   {
+    _id: Number,
     name: String,
     description: String,
-    packages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Package" }],
+    packages: [{ type: Number, ref: "Package" }],
     hotel: { type: mongoose.Schema.Types.ObjectId, ref: "Hotel" },
     images: [{ type: String, default: "" }],
 
@@ -18,10 +20,9 @@ const roomSchema = new mongoose.Schema(
 
     features: {
       smoking: { type: Boolean, default: false },
-      roomSharing: { type: String, enum: ["Shared", "Private"] },
       mobilityAccessible: { type: Boolean, default: true },
       openAirBath: { type: Boolean, default: false },
-      aitConditioning: { type: Boolean, default: false },
+      airConditioning: { type: Boolean, default: false },
       balcony: { type: Boolean, default: false },
     },
 
@@ -39,11 +40,27 @@ const roomSchema = new mongoose.Schema(
       relation: { type: String, enum: ["Together", "Separate"] },
       bathTub: Boolean,
       shower: Boolean,
-      electronicBidet: Boolean,
+      electronicBidget: Boolean,
       mobilityAccessible: Boolean,
     },
   },
-  { timestamps: true, collection: "Room" }
+  { collection: "Room" }
 );
+
+roomSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    try {
+      const counter = await AutoIncrement.findByIdAndUpdate(
+        { _id: "increment" },
+        { $inc: { roomId: 1 } },
+        { new: true, upsert: true }
+      );
+      this._id = counter.roomId;
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
 
 export default mongoose.model("Room", roomSchema);
