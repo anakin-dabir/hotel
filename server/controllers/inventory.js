@@ -19,41 +19,25 @@ async function updateInventory(req, res) {
   } = req.body;
 
   const _date = dayjs(date).format("YYYY-MM-DD");
-  // const _googleInventory = addInventory({
-  //   hotelId,
-  //   packageId,
-  //   roomId,
-  //   startDate: _date,
-  //   endDate: _date,
-  //   inventory: inventory,
-  // });
+  const _googleInventory = addInventory({
+    hotelId,
+    packageId,
+    roomId,
+    startDate: _date,
+    endDate: _date,
+    inventory: inventory,
+  });
 
-  // const _googleAvailability = toggleAvailability({
-  //   hotelId,
-  //   packageId,
-  //   roomId,
-  //   startDate: _date,
-  //   endDate: _date,
-  //   packageId: packageId,
-  //   available: availability,
-  // });
-
-  // const _googleAvailabilityRequest = axios.post(
-  //   AVAILABILITY,
-  //   _googleAvailability,
-  //   config.FETCH_OPTIONS
-  // );
-
-  // try {
-  //   const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
-  //   console.log({ ERROR, STATUS, MESSAGE });
-  //   if (ERROR) {
-  //     return res.status(STATUS).json({ message: MESSAGE });
-  //   }
-  // } catch (error) {
-  //   return res.status(500).json({ message: _googleError(error) });
-  // }
+  try {
+    const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
+    const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+    console.log({ ERROR, STATUS, MESSAGE });
+    if (ERROR) {
+      return res.status(STATUS).json({ message: MESSAGE });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: _googleError(error) });
+  }
 
   try {
     await InventoryData.updateOne(
@@ -77,42 +61,25 @@ async function updateBulkInventory(req, res) {
 
   const _googleStartDate = dayjs(startDate).format("YYYY-MM-DD");
   const _googleEndDate = dayjs(endDate).format("YYYY-MM-DD");
-  // const _googleInventory = addInventory({
-  //   hotelId,
-  //   packageId,
-  //   roomId,
-  //   startDate: _googleStartDate,
-  //   endDate: _googleEndDate,
-  //   inventory: inventory,
-  // });
+  const _googleInventory = addInventory({
+    hotelId,
+    packageId,
+    roomId,
+    startDate: _googleStartDate,
+    endDate: _googleEndDate,
+    inventory: inventory,
+  });
 
-  // const _googleAvailability = toggleAvailability({
-  //   hotelId,
-  //   packageId,
-  //   roomId,
-  //   startDate: _googleStartDate,
-  //   endDate: _googleEndDate,
-  //   packageId: packageId,
-  //   available: availability,
-  // });
-
-  // const _googleInventoryRequest = axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  // const _googleAvailabilityRequest = axios.post(
-  //   AVAILABILITY,
-  //   _googleAvailability,
-  //   config.FETCH_OPTIONS
-  // );
-
-  // try {
-  //   const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
-  //   const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
-  //   console.log({ ERROR, STATUS, MESSAGE });
-  //   if (ERROR) {
-  //     return res.status(STATUS).json({ message: MESSAGE });
-  //   }
-  // } catch (error) {
-  //   return res.status(500).json({ message: _googleError(error) });
-  // }
+  try {
+    const responses = await axios.post(INVENTORY, _googleInventory, config.FETCH_OPTIONS);
+    const { ERROR, STATUS, MESSAGE } = _googleResponseError(responses, true);
+    console.log({ ERROR, STATUS, MESSAGE });
+    if (ERROR) {
+      return res.status(STATUS).json({ message: MESSAGE });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: _googleError(error) });
+  }
 
   let inventoryOps = [];
   for (let date = dayjs(startDate); !date.isAfter(dayjs(endDate)); date = date.add(1, "day")) {

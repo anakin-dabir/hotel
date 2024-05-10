@@ -9,6 +9,7 @@ import { TRANSACTION } from "../seed/googleEndpoints.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
 import axios from "axios";
 import AutoIncrement from "../models/AutoIncrement.js";
+import _googleError from "../utils/_googleError.js";
 
 async function create(req, res) {
   const {
@@ -133,7 +134,7 @@ async function create(req, res) {
     return res.status(200).json({ message: "Room creation successfull", data: { room } });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: _googleError(error) });
   }
 }
 
@@ -238,7 +239,7 @@ async function updateRoom(req, res) {
     await room.save();
     return res.status(200).json({ message: "Room Updated Successfuly", data: room });
   } catch (error) {
-    return res.status(500).json({ message: "Room update failed" });
+    return res.status(500).json({ message: _googleError(error) });
   }
 }
 

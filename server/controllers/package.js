@@ -10,6 +10,7 @@ import { TRANSACTION } from "../seed/googleEndpoints.js";
 import config from "../config/config.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
 import { _updatePackage, createPackage } from "../seed/xmlSeed.js";
+import _googleError from "../utils/_googleError.js";
 
 async function create(req, res) {
   let {
@@ -85,7 +86,7 @@ async function create(req, res) {
 
     return res.status(200).json({ message: "Package created successfully", data: _package });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: _googleError(error) });
   }
 }
 
@@ -161,7 +162,7 @@ async function updatePackage(req, res) {
 
     return res.status(200).json({ message: "Package Updated successfully", data: _package });
   } catch (error) {
-    return res.status(500).json({ message: "Failed to update the package" });
+    return res.status(500).json({ message: _googleError(error) });
   }
 }
 
