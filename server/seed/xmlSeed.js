@@ -97,8 +97,8 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => 
         <Text text="${packageData.description}" language="en"/>
       </Description>
       <Refundable available="${packageData.refundable ? "true" : "false"}" />
-      <InternetIncluded>"${packageData.internet ? "true" : "false"}"</InternetIncluded>
-      <ParkingIncluded>"${packageData.parking ? "true" : "false"}"</ParkingIncluded>
+      <InternetIncluded>"${packageData.internet ? true : false}"</InternetIncluded>
+      <ParkingIncluded>"${packageData.parking ? true : false}"</ParkingIncluded>
     </PackageData>
   </PropertyDataSet>
 </Transaction>
@@ -304,10 +304,10 @@ const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages 
           ? `<Refundable available="false"  />`
           : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
       }
-      <InternetIncluded>"${internet ? "true" : "false"}"</InternetIncluded>
-      <ParkingIncluded>"${parking ? "true" : "false"}"</ParkingIncluded>
-      <CheckinTime>"${checkInTime}"</CheckinTime>
-      <CheckoutTime>"${checkOutTime}"</CheckoutTime>
+      <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
+      <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
+      <CheckinTime>${checkInTime}</CheckinTime>
+      <CheckoutTime>${checkOutTime}</CheckoutTime>
       ${meals
         .map((meal) => {
           return meal === "Breakfast"
@@ -354,10 +354,10 @@ const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
           ? `<Refundable available="false"  />`
           : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
       }
-      <InternetIncluded>"${internet ? "true" : "false"}"</InternetIncluded>
-      <ParkingIncluded>"${parking ? "true" : "false"}"</ParkingIncluded>
-      <CheckinTime>"${checkInTime}"</CheckinTime>
-      <CheckoutTime>"${checkOutTime}"</CheckoutTime>
+      <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
+      <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
+      <CheckinTime>${checkInTime}</CheckinTime>
+      <CheckoutTime>${checkOutTime}</CheckoutTime>
       ${meals
         .map((meal) => {
           return meal === "Breakfast"
