@@ -48,9 +48,6 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => 
       <Description>
         <Text text="${description}" language="en"/>
       </Description>
-       <AllowablePackageIDs>
-        <AllowablePackageID>${packageId}</AllowablePackageID>
-      </AllowablePackageIDs>
       <Capacity>${capacity.maxCapacity}</Capacity>
       <AdultCapacity>${capacity.adultCapacity}</AdultCapacity>
       ${capacity?.childCapacity && `<ChildCapacity>${capacity.childCapacity}</ChildCapacity>`}
@@ -99,9 +96,6 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => 
       <Description>
         <Text text="${packageData.description}" language="en"/>
       </Description>
-      <AllowableRoomIDs>
-        <AllowableRoomID>${roomId}</AllowableRoomID>
-      </AllowableRoomIDs>
       <Refundable available="${packageData.refundable ? "true" : "false"}" />
       <InternetIncluded>"${packageData.internet ? "true" : "false"}"</InternetIncluded>
       <ParkingIncluded>"${packageData.parking ? "true" : "false"}"</ParkingIncluded>
@@ -297,17 +291,6 @@ const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages 
              partner="${PARTNER_KEY}">
   <PropertyDataSet action="delta">
     <Property>${hotelId}</Property>
-    <RoomData>
-      <RoomID>${roomId}</RoomID>
-      <AllowablePackageIDs>
-       ${packages
-         .map((_package) => {
-           return `<AllowablePackageID>${_package}</AllowablePackageID>`;
-         })
-         .join("")}
-        <AllowablePackageID>${packageId}</AllowablePackageID>
-      </AllowablePackageIDs>
-    </RoomData>
     <PackageData>
       <PackageID>${packageId}</PackageID>
       <Name>
@@ -316,9 +299,6 @@ const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages 
       <Description>
         <Text text="${description}" language="en"/>
       </Description>
-      <AllowableRoomIDs>
-        <AllowableRoomID>${roomId}</AllowableRoomID>
-      </AllowableRoomIDs>
       ${
         !refundable
           ? `<Refundable available="false"  />`
@@ -361,9 +341,6 @@ const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
              partner="${PARTNER_KEY}">
   <PropertyDataSet action="delta">
     <Property>${hotelId}</Property>
-    <RoomData>
-      <RoomID>${roomId}</RoomID>
-    </RoomData>
     <PackageData>
       <PackageID>${packageId}</PackageID>
       <Name>
@@ -372,9 +349,6 @@ const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
       <Description>
         <Text text="${description}" language="en"/>
       </Description>
-      <AllowableRoomIDs>
-        <AllowableRoomID>${roomId}</AllowableRoomID>
-      </AllowableRoomIDs>
       ${
         !refundable
           ? `<Refundable available="false"  />`
