@@ -1,6 +1,7 @@
 import generateId from "../utils/generateId.js";
 import getTimestamp from "../utils/getTimestamp.js";
 import config from "../config/config.js";
+import dayjs from 'dayjs';
 
 // Date format Must be YYYY-MM-DD
 const PARTNER_KEY = "proexsus_56786238";
@@ -306,8 +307,8 @@ const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages 
       }
       <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
       <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
-      <CheckinTime>${checkInTime}</CheckinTime>
-      <CheckoutTime>${checkOutTime}</CheckoutTime>
+      <CheckinTime>${dayjs(checkInTime).format("HH:mm")}</CheckinTime>
+      <CheckoutTime>${dayjs(checkOutTime).format("HH:mm")}</CheckoutTime>
       ${meals
         .map((meal) => {
           return meal === "Breakfast"
@@ -356,8 +357,8 @@ const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
       }
       <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
       <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
-      <CheckinTime>${checkInTime}</CheckinTime>
-      <CheckoutTime>${checkOutTime}</CheckoutTime>
+      <CheckinTime>${dayjs(checkInTime).format("HH:mm")}</CheckinTime>
+      <CheckoutTime>${dayjs(checkOutTime).format("HH:mm")}</CheckoutTime>
       ${meals
         .map((meal) => {
           return meal === "Breakfast"
