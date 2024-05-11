@@ -10,7 +10,6 @@ import { TRANSACTION } from "../seed/googleEndpoints.js";
 import config from "../config/config.js";
 import _googleResponseError from "../utils/_googleResponseError.js";
 import { _updatePackage, createPackage } from "../seed/xmlSeed.js";
-import _googleError from "../utils/_googleError.js";
 
 async function create(req, res) {
   let {
@@ -86,7 +85,7 @@ async function create(req, res) {
 
     return res.status(200).json({ message: "Package created successfully", data: _package });
   } catch (error) {
-    return res.status(500).json({ message: _googleError(error) });
+    return res.status(500).json({ message: error.message });
   }
 }
 
@@ -162,7 +161,7 @@ async function updatePackage(req, res) {
 
     return res.status(200).json({ message: "Package Updated successfully", data: _package });
   } catch (error) {
-    return res.status(500).json({ message: _googleError(error) });
+    return res.status(500).json({ message: "Failed to update the package" });
   }
 }
 
@@ -294,15 +293,16 @@ async function search(req, res) {
             numAdults: Number(adult),
             numChildren: Number(children),
             requiredRooms: Number(room),
+            dateRange: dateRange // Assuming dateRange is passed correctly here
           },
           pipeline: [
             {
               $match: {
                 $expr: {
                   $and: [
-                    { $in: ["$_id", "$$roomIds"] }, // Ensures the room is one of the relevant rooms
-                    { $gte: ["$capacity.adultCapacity", "$$numAdults"] }, // Checks adult capacity
-                    { $gte: ["$capacity.childCapacity", "$$numChildren"] }, // Checks children capacity
+                    { $in: ["$_id", "$$roomIds"] },
+                    { $gte: ["$capacity.adultCapacity", "$$numAdults"] },
+                    { $gte: ["$capacity.childCapacity", "$$numChildren"] }
                   ],
                 },
               },
@@ -310,25 +310,18 @@ async function search(req, res) {
             {
               $lookup: {
                 from: "InventoryData",
-                let: { roomId: "$_id", dateRange: dateRange },
+                let: { roomId: "$_id", dateRange: "$$dateRange" }, // Pass dateRange down
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $and: [
-                          {
-                            $in: [
-                              "$_id",
-                              {
-                                $map: {
-                                  input: "$$dateRange",
-                                  as: "date",
-                                  in: { $concat: [{ $toString: "$$roomId" }, "_", "$$date"] },
-                                },
-                              },
-                            ],
+                        $in: ["$_id", {
+                          $map: {
+                            input: "$$dateRange",
+                            as: "date",
+                            in: { $concat: [{ $toString: "$$roomId" }, "_", "$$date"] }
                           },
-                        ],
+                        }]
                       },
                     },
                   },
@@ -339,32 +332,28 @@ async function search(req, res) {
             {
               $lookup: {
                 from: "Package",
-                let: { packageIds: "$packages" },
+                let: { packageIds: "$packages", dateRange: "$$dateRange" }, // Pass dateRange down
                 pipeline: [
                   { $match: { $expr: { $in: ["$_id", "$$packageIds"] } } },
                   {
                     $lookup: {
                       from: "PackageData",
-                      let: { packageId: "$_id", dateRange: dateRange },
+                      let: { packageId: "$_id", dateRange: "$$dateRange" }, // Pass dateRange down
                       pipeline: [
                         {
                           $match: {
                             $expr: {
-                              $and: [
+                              $in: [
+                                "$_id",
                                 {
-                                  $in: [
-                                    "$_id",
-                                    {
-                                      $map: {
-                                        input: "$$dateRange",
-                                        as: "date",
-                                        in: {
-                                          $concat: [{ $toString: "$$packageId" }, "_", "$$date"],
-                                        },
-                                      },
-                                    },
-                                  ],
-                                },
+                                  $map: {
+                                    input: "$$dateRange",
+                                    as: "date",
+                                    in: {
+                                      $concat: [{ $toString: "$$packageId" }, "_", "$$date"]
+                                    }
+                                  },
+                                }
                               ],
                             },
                           },
@@ -377,35 +366,44 @@ async function search(req, res) {
                 as: "packages",
               },
             },
+            {
+              $addFields: {
+                inventoryData: {
+                  $cond: [
+                    { $eq: [{ $size: "$inventoryData" }, { $size: "$$dateRange" }] },
+                    "$inventoryData",
+                    []
+                  ]
+                },
+                packages: {
+                  $map: {
+                    input: "$packages",
+                    as: "package",
+                    in: {
+                      $mergeObjects: [
+                        "$$package",
+                        {
+                          packageData: {
+                            $cond: [
+                              { $eq: [{ $size: "$$package.packageData" }, { $size: "$$dateRange" }] },
+                              "$$package.packageData",
+                              []
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
           ],
           as: "rooms",
         },
       },
-      {
-        $addFields: {
-          rooms: {
-            $filter: {
-              input: "$rooms",
-              as: "room",
-              cond: {
-                $and: [
-                  {
-                    $eq: [{ $size: "$$room.inventoryData" }, dateRange.length],
-                  },
-                  {
-                    $eq: [
-                      { $size: { $arrayElemAt: ["$$room.packages.packageData", 0] } },
-                      dateRange.length,
-                    ],
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
       { $project: { rooms: 1 } },
-    ]);
+  ]);
+  
     return res.status(200).json({ message: "", data: hotel });
   } catch (error) {
     return res.status(500).json({ message: error.message });

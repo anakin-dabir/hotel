@@ -98,8 +98,8 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => 
         <Text text="${packageData.description}" language="en"/>
       </Description>
       <Refundable available="${packageData.refundable ? "true" : "false"}" />
-      <InternetIncluded>"${packageData.internet ? true : false}"</InternetIncluded>
-      <ParkingIncluded>"${packageData.parking ? true : false}"</ParkingIncluded>
+      <InternetIncluded>${packageData.internet ? true : false}</InternetIncluded>
+      <ParkingIncluded>${packageData.parking ? true : false}</ParkingIncluded>
     </PackageData>
   </PropertyDataSet>
 </Transaction>
@@ -303,10 +303,10 @@ const createPackage = ({ hotelId = 10, roomId, packageId, packageData, packages 
       ${
         !refundable
           ? `<Refundable available="false"  />`
-          : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
+          : `<Refundable available="true" refundable_until_time="${dayjs(refundableUntilTime).format("HH:mm")}" />`
       }
-      <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
-      <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
+      <InternetIncluded>${internet ? true : false}</InternetIncluded>
+      <ParkingIncluded>${parking ? true : false}</ParkingIncluded>
       <CheckinTime>${dayjs(checkInTime).format("HH:mm")}</CheckinTime>
       <CheckoutTime>${dayjs(checkOutTime).format("HH:mm")}</CheckoutTime>
       ${meals
@@ -353,10 +353,10 @@ const _updatePackage = ({ hotelId = 10, roomId, packageId, packageData }) => {
       ${
         !refundable
           ? `<Refundable available="false"  />`
-          : `<Refundable available="true" refundable_until_time="${refundableUntilTime}" />`
+          : `<Refundable available="true" refundable_until_time="${dayjs(refundableUntilTime).format("HH:mm")}" />`
       }
-      <InternetIncluded>"${internet ? true : false}"</InternetIncluded>
-      <ParkingIncluded>"${parking ? true : false}"</ParkingIncluded>
+      <InternetIncluded>${internet ? true : false}</InternetIncluded>
+      <ParkingIncluded>${parking ? true : false}</ParkingIncluded>
       <CheckinTime>${dayjs(checkInTime).format("HH:mm")}</CheckinTime>
       <CheckoutTime>${dayjs(checkOutTime).format("HH:mm")}</CheckoutTime>
       ${meals
