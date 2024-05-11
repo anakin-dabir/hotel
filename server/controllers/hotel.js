@@ -68,8 +68,7 @@ async function create(req, res) {
     state,
     city,
     country,
-    longitude,
-    latitude,
+    iframe,
     postalCode,
     phone,
     website,
@@ -83,7 +82,7 @@ async function create(req, res) {
   checkoutTime = dayjs(checkoutTime).toISOString();
 
   console.log({ checkinTime, checkoutTime, undefined: dayjs(undefined) });
-
+  console.log({iframe})
   try {
     // Upsert the Hotel
     const hotel = await Hotel.findOneAndUpdate(
@@ -102,8 +101,7 @@ async function create(req, res) {
           state,
           country,
           city,
-          latitude,
-          longitude,
+          iframe,
           postalCode,
         },
         amenities,
