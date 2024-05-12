@@ -252,4 +252,30 @@ async function updatePassword(req, res) {
   }
 }
 
-export { get, getRoomsByHotelID, login, create, getDataByHotelId, getBulkData, updatePassword };
+async function createPayment(req, res) {
+  try {
+    const { hotelId, keyId, keySecret } = req.body;
+    const payment = await Hotel.findByIdAndUpdate(
+      hotelId, 
+      {
+        $set: {
+          payment_key: {
+            keyId,
+          },
+          payment_secret: {
+            keySecret
+          }
+        }
+      }, 
+      {
+        new: true,  // Ensures the updated document is returned
+        select: 'payment_key payment_secret'  // Specifies which fields to return
+      }
+    );
+    return res.status(200).json({ message: "Payment Details Added", data: payment})
+  } catch (error) {
+    
+  }
+}
+
+export { get, getRoomsByHotelID, login, create, getDataByHotelId, getBulkData, updatePassword,createPayment };

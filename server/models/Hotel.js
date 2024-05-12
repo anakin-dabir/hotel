@@ -30,6 +30,12 @@ const hotelSchema = new mongoose.Schema(
       checkoutTime: String,
     },
     amenities: [String],
+    payment_key: {
+      keyId: String,
+    },
+    payment_secret: {
+      keySecret: String
+    }
   },
   {
     collection: "Hotel",

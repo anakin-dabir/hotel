@@ -7,6 +7,7 @@ import {
   getDataByHotelId,
   getBulkData,
   updatePassword,
+  createPayment
 } from "../../controllers/hotel.js";
 import verifyToken from "../../middleware/verifyToken.js";
 
@@ -25,5 +26,8 @@ hotelRouter.post("/updatePassword", updatePassword);
 
 // homePage
 hotelRouter.get("/getBulkData/:hotelId/:startDate/:endDate", getBulkData);
+
+// payment
+hotelRouter.post("/payment", createPayment)
 
 export default hotelRouter;
