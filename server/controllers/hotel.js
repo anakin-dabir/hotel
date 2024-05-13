@@ -142,42 +142,50 @@ async function getDataByHotelId(req, res) {
 }
 
 async function getBulkData(req, res) {
-  const { hotelId, startDate, endDate } = req.params;
-  const _startDate = dayjs(startDate).format("YYYY-MM-DD");
-  const _endDate = dayjs(endDate).format("YYYY-MM-DD");
+  const { hotelId, room, adult, children } = req.params;
+  let { dateRange } = req.params;
+  dateRange = JSON.parse(dateRange);
   try {
     const hotel = await Hotel.aggregate([
       { $match: { id: Number(hotelId) } },
       {
         $lookup: {
           from: "Room",
-          let: { roomIds: "$rooms" },
+          let: {
+            roomIds: "$rooms",
+            numAdults: Number(adult),
+            numChildren: Number(children),
+            requiredRooms: Number(room),
+            dateRange: dateRange, // Assuming dateRange is passed correctly here
+          },
           pipeline: [
-            { $match: { $expr: { $in: ["$_id", "$$roomIds"] } } },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $in: ["$_id", "$$roomIds"] },
+                    { $gte: ["$capacity.adultCapacity", "$$numAdults"] },
+                    { $gte: ["$capacity.childCapacity", "$$numChildren"] },
+                  ],
+                },
+              },
+            },
             {
               $lookup: {
                 from: "InventoryData",
-                let: { roomId: "$_id", startDate: _startDate, endDate: _endDate },
+                let: { roomId: "$_id", dateRange: "$$dateRange" }, // Pass dateRange down
                 pipeline: [
                   {
                     $match: {
                       $expr: {
-                        $and: [
+                        $in: [
+                          "$_id",
                           {
-                            $gte: [
-                              "$_id",
-                              {
-                                $concat: [{ $toString: "$$roomId" }, "_", "$$startDate"],
-                              },
-                            ],
-                          },
-                          {
-                            $lte: [
-                              "$_id",
-                              {
-                                $concat: [{ $toString: "$$roomId" }, "_", "$$endDate"],
-                              },
-                            ],
+                            $map: {
+                              input: "$$dateRange",
+                              as: "date",
+                              in: { $concat: [{ $toString: "$$roomId" }, "_", "$$date"] },
+                            },
                           },
                         ],
                       },
@@ -190,33 +198,27 @@ async function getBulkData(req, res) {
             {
               $lookup: {
                 from: "Package",
-                let: { packageIds: "$packages" },
+                let: { packageIds: "$packages", dateRange: "$$dateRange" }, // Pass dateRange down
                 pipeline: [
                   { $match: { $expr: { $in: ["$_id", "$$packageIds"] } } },
                   {
                     $lookup: {
                       from: "PackageData",
-                      let: { packageId: "$_id", startDate: _startDate, endDate: _endDate },
+                      let: { packageId: "$_id", dateRange: "$$dateRange" }, // Pass dateRange down
                       pipeline: [
                         {
                           $match: {
                             $expr: {
-                              $and: [
+                              $in: [
+                                "$_id",
                                 {
-                                  $gte: [
-                                    "$_id",
-                                    {
-                                      $concat: [{ $toString: "$$packageId" }, "_", "$$startDate"],
+                                  $map: {
+                                    input: "$$dateRange",
+                                    as: "date",
+                                    in: {
+                                      $concat: [{ $toString: "$$packageId" }, "_", "$$date"],
                                     },
-                                  ],
-                                },
-                                {
-                                  $lte: [
-                                    "$_id",
-                                    {
-                                      $concat: [{ $toString: "$$packageId" }, "_", "$$endDate"],
-                                    },
-                                  ],
+                                  },
                                 },
                               ],
                             },
@@ -228,6 +230,29 @@ async function getBulkData(req, res) {
                   },
                 ],
                 as: "packages",
+              },
+            },
+            {
+              $addFields: {
+                inventoryData: {
+                  $cond: [{ $eq: [{ $size: "$inventoryData" }, { $size: "$$dateRange" }] }, "$inventoryData", []],
+                },
+                packages: {
+                  $map: {
+                    input: "$packages",
+                    as: "package",
+                    in: {
+                      $mergeObjects: [
+                        "$$package",
+                        {
+                          packageData: {
+                            $cond: [{ $eq: [{ $size: "$$package.packageData" }, { $size: "$$dateRange" }] }, "$$package.packageData", []],
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
               },
             },
           ],

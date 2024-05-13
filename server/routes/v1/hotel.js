@@ -25,7 +25,7 @@ hotelRouter.get("/getDataByHotelId/:hotelId", getDataByHotelId);
 hotelRouter.post("/updatePassword", updatePassword);
 
 // homePage
-hotelRouter.get("/getBulkData/:hotelId/:startDate/:endDate", getBulkData);
+hotelRouter.get("/getBulkData/:hotelId/:dateRange/:room/:adult/:children", getBulkData);
 
 // payment
 hotelRouter.post("/payment", createPayment)

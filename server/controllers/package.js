@@ -12,19 +12,7 @@ import _googleResponseError from "../utils/_googleResponseError.js";
 import { _updatePackage, createPackage } from "../seed/xmlSeed.js";
 
 async function create(req, res) {
-  let {
-    name,
-    description,
-    refundable,
-    refundableUntilTime,
-    internet,
-    parking,
-    meals,
-    checkInTime,
-    checkOutTime,
-    roomId,
-    hotelId,
-  } = req.body;
+  let { name, description, refundable, refundableUntilTime, internet, parking, meals, checkInTime, checkOutTime, roomId, hotelId } = req.body;
 
   checkInTime = dayjs(checkInTime).toISOString();
   checkOutTime = dayjs(checkOutTime).toISOString();
@@ -90,20 +78,7 @@ async function create(req, res) {
 }
 
 async function updatePackage(req, res) {
-  let {
-    name,
-    description,
-    refundable,
-    refundableUntilTime,
-    internet,
-    parking,
-    meals,
-    checkInTime,
-    checkOutTime,
-    roomId,
-    hotelId,
-    packageId,
-  } = req.body;
+  let { name, description, refundable, refundableUntilTime, internet, parking, meals, checkInTime, checkOutTime, roomId, hotelId, packageId } = req.body;
 
   checkInTime = dayjs(checkInTime).toISOString();
   checkOutTime = dayjs(checkOutTime).toISOString();
@@ -293,7 +268,7 @@ async function search(req, res) {
             numAdults: Number(adult),
             numChildren: Number(children),
             requiredRooms: Number(room),
-            dateRange: dateRange // Assuming dateRange is passed correctly here
+            dateRange: dateRange, // Assuming dateRange is passed correctly here
           },
           pipeline: [
             {
@@ -302,7 +277,7 @@ async function search(req, res) {
                   $and: [
                     { $in: ["$_id", "$$roomIds"] },
                     { $gte: ["$capacity.adultCapacity", "$$numAdults"] },
-                    { $gte: ["$capacity.childCapacity", "$$numChildren"] }
+                    { $gte: ["$capacity.childCapacity", "$$numChildren"] },
                   ],
                 },
               },
@@ -315,13 +290,16 @@ async function search(req, res) {
                   {
                     $match: {
                       $expr: {
-                        $in: ["$_id", {
-                          $map: {
-                            input: "$$dateRange",
-                            as: "date",
-                            in: { $concat: [{ $toString: "$$roomId" }, "_", "$$date"] }
+                        $in: [
+                          "$_id",
+                          {
+                            $map: {
+                              input: "$$dateRange",
+                              as: "date",
+                              in: { $concat: [{ $toString: "$$roomId" }, "_", "$$date"] },
+                            },
                           },
-                        }]
+                        ],
                       },
                     },
                   },
@@ -350,10 +328,10 @@ async function search(req, res) {
                                     input: "$$dateRange",
                                     as: "date",
                                     in: {
-                                      $concat: [{ $toString: "$$packageId" }, "_", "$$date"]
-                                    }
+                                      $concat: [{ $toString: "$$packageId" }, "_", "$$date"],
+                                    },
                                   },
-                                }
+                                },
                               ],
                             },
                           },
@@ -369,11 +347,7 @@ async function search(req, res) {
             {
               $addFields: {
                 inventoryData: {
-                  $cond: [
-                    { $eq: [{ $size: "$inventoryData" }, { $size: "$$dateRange" }] },
-                    "$inventoryData",
-                    []
-                  ]
+                  $cond: [{ $eq: [{ $size: "$inventoryData" }, { $size: "$$dateRange" }] }, "$inventoryData", []],
                 },
                 packages: {
                   $map: {
@@ -384,37 +358,25 @@ async function search(req, res) {
                         "$$package",
                         {
                           packageData: {
-                            $cond: [
-                              { $eq: [{ $size: "$$package.packageData" }, { $size: "$$dateRange" }] },
-                              "$$package.packageData",
-                              []
-                            ]
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
+                            $cond: [{ $eq: [{ $size: "$$package.packageData" }, { $size: "$$dateRange" }] }, "$$package.packageData", []],
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
           ],
           as: "rooms",
         },
       },
       { $project: { rooms: 1 } },
-  ]);
-  
+    ]);
+
     return res.status(200).json({ message: "", data: hotel });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 }
-export {
-  create,
-  get,
-  getInventoryDataByRoomId,
-  testing,
-  search,
-  getPackageDataByRoomIdAndPackageId,
-  updatePackage,
-};
+export { create, get, getInventoryDataByRoomId, testing, search, getPackageDataByRoomIdAndPackageId, updatePackage };
