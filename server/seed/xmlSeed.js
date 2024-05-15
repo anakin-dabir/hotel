@@ -106,7 +106,7 @@ const addRoom = ({ hotelId = 10, roomId, roomData, packageId, packageData }) => 
 `;
 };
 
-const updateRoom = ({ hotelId = 10, roomId, roomData }) => {
+const _updateRoom = ({ hotelId = 10, roomId, roomData }) => {
   const { name, description, capacity, features, washroom } = roomData;
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Transaction timestamp="${getTimestamp()}"
@@ -379,7 +379,7 @@ export {
   addInventory,
   addRate,
   toggleAvailability,
-  updateRoom,
+  _updateRoom,
   createPackage,
   _updatePackage,
 };

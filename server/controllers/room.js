@@ -2,7 +2,7 @@ import Package from "../models/Package.js";
 import Room from "../models/Room.js";
 import config from "../config/config.js";
 import Hotel from "../models/Hotel.js";
-import { addRoom } from "../seed/xmlSeed.js";
+import { addRoom, _updateRoom } from "../seed/xmlSeed.js";
 import expandBeds from "../utils/expandBeds.js";
 import mongoose from "mongoose";
 import { TRANSACTION } from "../seed/googleEndpoints.js";
@@ -166,7 +166,7 @@ async function updateRoom(req, res) {
   const _googleRoomId = Number(roomId);
   const _googleBeds = expandBeds(beds);
 
-  const _googleRoom = updateRoom({
+  const _googleRoom = _updateRoom({
     hotelId: _googleId,
     roomId: _googleRoomId,
     roomData: {
