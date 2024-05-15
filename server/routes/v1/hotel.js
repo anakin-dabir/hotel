@@ -14,6 +14,7 @@ import verifyToken from "../../middleware/verifyToken.js";
 const hotelRouter = express.Router();
 
 hotelRouter.get("/:hotelId", get);
+
 hotelRouter.get("/rooms/:hotelId", verifyToken, getRoomsByHotelID);
 
 // authentication
